@@ -37,13 +37,16 @@ jobs:
         run: |
           REPO_NAME="${{ github.event.repository.name }}"
           OWNER="${{ github.repository_owner }}"
+          echo "Repository name: $REPO_NAME"
+          echo "Repository owner: $OWNER"
           if [ "$REPO_NAME" == "$OWNER.github.io" ]; then
             echo "base=/" >> $GITHUB_OUTPUT
-            echo "Base path set to: /"
+            echo "Base path set to: / (user/organization site)"
           else
             echo "base=/$REPO_NAME/" >> $GITHUB_OUTPUT
-            echo "Base path set to: /$REPO_NAME/"
+            echo "Base path set to: /$REPO_NAME/ (project site)"
           fi
+          echo "Final base path: ${{ steps.base_path.outputs.base }}"
 
       - name: Build
         env:
@@ -54,12 +57,33 @@ jobs:
           # 如果需要在构建时使用 API Key，可以通过 GitHub Secrets 设置
           # GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
-          echo "Building with VITE_BASE=$VITE_BASE"
+          echo "=== Build Configuration ==="
+          echo "VITE_BASE=$VITE_BASE"
           echo "Repository: ${{ github.repository }}"
           echo "Repository name: ${{ github.event.repository.name }}"
+          echo "Repository owner: ${{ github.repository_owner }}"
+          echo ""
+          echo "=== Starting Build ==="
           npm run build
-          echo "Build completed. Checking dist/index.html..."
-          head -20 dist/index.html || cat dist/index.html
+          echo ""
+          echo "=== Build Output ==="
+          echo "Files in dist:"
+          ls -la dist/
+          echo ""
+          echo "Files in dist/assets:"
+          ls -la dist/assets/
+          echo ""
+          echo "Content of dist/index.html:"
+          cat dist/index.html
+          echo ""
+          echo "=== Verifying Resource Paths ==="
+          # 检查 HTML 中的资源路径
+          if grep -q 'src="/assets/' dist/index.html; then
+            echo "✓ Resource paths are absolute (correct for base=/)"
+          else
+            echo "✗ Resource paths may be incorrect!"
+            exit 1
+          fi
 
       - name: Setup Pages
         uses: actions/configure-pages@v4
