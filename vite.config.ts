@@ -8,7 +8,12 @@ import react from '@vitejs/plugin-react';
 const getBase = () => {
   // 可以通过环境变量设置，或者根据仓库名自动设置
   // 如果是在 GitHub Actions 中，可以通过环境变量传递
-  return process.env.VITE_BASE || '/';
+  const base = process.env.VITE_BASE || '/';
+  // 调试输出（仅在构建时）
+  if (process.env.NODE_ENV === 'production' || process.env.CI) {
+    console.log(`[Vite Config] Base path set to: "${base}"`);
+  }
+  return base;
 };
 
 export default defineConfig(({ mode }) => {
