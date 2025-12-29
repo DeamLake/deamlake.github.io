@@ -88,23 +88,24 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
-      - name: Create .nojekyll file
-        run: |
-          echo "Creating .nojekyll file to disable Jekyll processing..."
-          touch dist/.nojekyll
-          echo ".nojekyll file created"
-
       - name: Verify build output
         run: |
           echo "=== Build Output Verification ==="
-          echo "Files in dist:"
-          ls -la dist/ || dir dist
+          echo "Files in dist (including hidden files):"
+          ls -la dist/
           echo ""
           echo "Files in dist/assets:"
-          ls -la dist/assets/ || dir dist\assets
+          ls -la dist/assets/
           echo ""
           echo "Checking for .nojekyll:"
-          ls -la dist/.nojekyll || echo ".nojekyll not found"
+          if [ -f dist/.nojekyll ]; then
+            echo "✓ .nojekyll file exists"
+            cat dist/.nojekyll || echo "(empty file)"
+          else
+            echo "✗ .nojekyll file NOT found - creating it now..."
+            touch dist/.nojekyll
+            echo "✓ .nojekyll file created"
+          fi
           echo ""
           echo "Content of dist/index.html:"
           cat dist/index.html
