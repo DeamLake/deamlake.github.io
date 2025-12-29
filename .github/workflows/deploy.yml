@@ -39,6 +39,7 @@ jobs:
           OWNER="${{ github.repository_owner }}"
           echo "Repository name: $REPO_NAME"
           echo "Repository owner: $OWNER"
+          # 对于 username.github.io 或 orgname.github.io 仓库，base 应该是 /
           if [ "$REPO_NAME" == "$OWNER.github.io" ]; then
             echo "base=/" >> $GITHUB_OUTPUT
             echo "Base path set to: / (user/organization site)"
@@ -46,12 +47,18 @@ jobs:
             echo "base=/$REPO_NAME/" >> $GITHUB_OUTPUT
             echo "Base path set to: /$REPO_NAME/ (project site)"
           fi
-          echo "Final base path: ${{ steps.base_path.outputs.base }}"
+          BASE_PATH=$(cat <<EOF
+          ${{ steps.base_path.outputs.base }}
+          EOF
+          )
+          echo "Final base path will be: $BASE_PATH"
+          echo "base=$BASE_PATH" > base_path.txt
+          cat base_path.txt
 
       - name: Build
         env:
-          # 自动设置 base 路径：如果仓库名是 username.github.io，使用 /，否则使用 /仓库名/
-          VITE_BASE: ${{ steps.base_path.outputs.base }}
+          # 对于 deamlake.github.io 仓库，base 必须是 /，直接硬编码确保正确
+          VITE_BASE: /
           NODE_ENV: production
           CI: true
           # 如果需要在构建时使用 API Key，可以通过 GitHub Secrets 设置
