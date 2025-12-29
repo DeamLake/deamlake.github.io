@@ -20,7 +20,7 @@ const getBase = () => {
 export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
-      base: getBase(),
+      base: './',
       server: {
         port: 3000,
         host: '0.0.0.0',
