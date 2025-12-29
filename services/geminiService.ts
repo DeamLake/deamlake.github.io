@@ -2,9 +2,16 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { WorkType } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// 使用 Vite 的 import.meta.env 或通过 define 注入的环境变量
+// @ts-ignore - Vite 会在构建时注入这些变量
+const apiKey = ((import.meta as any).env?.VITE_GEMINI_API_KEY || (process.env as any).API_KEY || '').trim();
+const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
 export const suggestTaskType = async (title: string, description: string): Promise<WorkType> => {
+  if (!ai) {
+    console.warn("Gemini API not configured, using default YELLOW type");
+    return WorkType.YELLOW;
+  }
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
@@ -26,6 +33,9 @@ export const suggestTaskType = async (title: string, description: string): Promi
 };
 
 export const generateTaskAnalysis = async (tasks: any[]) => {
+    if (!ai) {
+        return "Keep focusing on your high-priority items!";
+    }
     try {
         const response = await ai.models.generateContent({
             model: "gemini-3-flash-preview",
