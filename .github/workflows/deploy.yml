@@ -88,27 +88,39 @@ jobs:
       - name: Setup Pages
         uses: actions/configure-pages@v4
 
+      - name: Ensure .nojekyll file exists
+        run: |
+          echo "=== Ensuring .nojekyll file exists ==="
+          if [ -f dist/.nojekyll ]; then
+            echo "✓ .nojekyll file already exists"
+          else
+            echo "Creating .nojekyll file..."
+            touch dist/.nojekyll
+            echo "✓ .nojekyll file created"
+          fi
+          # 验证文件确实存在
+          ls -la dist/.nojekyll
+          echo "File size: $(stat -f%z dist/.nojekyll 2>/dev/null || stat -c%s dist/.nojekyll 2>/dev/null || echo '0') bytes"
+
       - name: Verify build output
         run: |
           echo "=== Build Output Verification ==="
-          echo "Files in dist (including hidden files):"
+          echo "All files in dist (including hidden):"
           ls -la dist/
           echo ""
           echo "Files in dist/assets:"
           ls -la dist/assets/
           echo ""
-          echo "Checking for .nojekyll:"
+          echo "Verifying .nojekyll:"
           if [ -f dist/.nojekyll ]; then
-            echo "✓ .nojekyll file exists"
-            cat dist/.nojekyll || echo "(empty file)"
+            echo "✓ .nojekyll file confirmed"
           else
-            echo "✗ .nojekyll file NOT found - creating it now..."
-            touch dist/.nojekyll
-            echo "✓ .nojekyll file created"
+            echo "✗ ERROR: .nojekyll file missing!"
+            exit 1
           fi
           echo ""
           echo "Content of dist/index.html:"
-          cat dist/index.html
+          head -15 dist/index.html
           echo ""
           echo "=== Verification Complete ==="
 

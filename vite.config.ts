@@ -50,6 +50,14 @@ export default defineConfig(({ mode }) => {
       build: {
         outDir: 'dist',
         assetsDir: 'assets',
+        rollupOptions: {
+          output: {
+            // 确保 JavaScript 文件使用 .js 扩展名而不是 .mjs
+            entryFileNames: 'assets/[name]-[hash].js',
+            chunkFileNames: 'assets/[name]-[hash].js',
+            assetFileNames: 'assets/[name]-[hash].[ext]'
+          }
+        }
       }
     };
 });
