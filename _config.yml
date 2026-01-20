@@ -1,13 +1,13 @@
 # Welcome to Jekyll!
 
 # Website settings
-title: Jalpc
+title: YooJade
 description: Jack's blog,use Jekyll and github pages.
 keywords: Jack,Jalpc,blog,Jekyll,github,gh-pages
-baseurl:  /Jalpc # if you have suburl as homepage like '/homepage', please change it to '/homepage' and your repo's name should be 'homepage'
-url: https://jarrekk.github.io/Jalpc  # url should be 'http://<github_username>.github.io/homepage' as before
+baseurl:  # 对于 deamlake.github.io 用户站点，baseurl 应该为空
+url: https://deamlake.github.io  # 用户站点的 URL
 # url: http://127.0.0.1:4000
-img_path: /Jalpc/static/assets/img/blog  # url should be '/homepage/static/assets/img/blog' as before
+img_path: /static/assets/img/blog  # 对于用户站点，路径不需要子路径前缀
 
 # author -- index page "about me" section
 author:  # change following line to your infomation.
