@@ -1,6 +1,9 @@
 $(document).ready(function() {
     pre_content = $("#jalpc_site_pv").html();
     $("#jalpc_site_pv").html(pre_content);
+    // 访问计数器服务已不可用，已禁用
+    // 如果需要统计功能，可以集成其他服务如 Google Analytics
+    /*
     $.ajax({
         type: "get",
         async: false,
@@ -13,7 +16,8 @@ $(document).ready(function() {
             $("#jalpc_site_pv").html('<span class="navy">' + website_count + '</span>&nbsp;<span data-i18n="link.view">views</span>&nbsp;||&nbsp;' + pre_content);
         },
         error: function() {
-            console.log('fail');
+            console.log('Counter service unavailable');
         }
     });
+    */
 });
